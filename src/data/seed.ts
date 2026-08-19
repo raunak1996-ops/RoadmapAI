@@ -308,7 +308,7 @@ export const SEED_TICKETS: Ticket[] = [
     updatedBy: 'GitHub',
     startDate: addDays(today, -28),
     endDate: addDays(today, 26),
-    riceScore: 58.5,
+    riceScore: 46.8,
     description:
       'Bring P95 dashboard render under 2s for the largest workspaces, closing the gap left by the Q3 caching layer.',
     childItems: [
@@ -329,7 +329,7 @@ export const SEED_TICKETS: Ticket[] = [
     updatedBy: 'Slack',
     startDate: addDays(today, -12),
     endDate: addDays(today, 18),
-    riceScore: 62,
+    riceScore: 49.6,
     ideaId: 'idea-001',
     description:
       'Queued, resumable exports streamed to object storage with a signed download link.',
@@ -349,7 +349,7 @@ export const SEED_TICKETS: Ticket[] = [
     lastUpdate: hoursAgo(26),
     startDate: addDays(today, 7),
     endDate: addDays(today, 49),
-    riceScore: 34,
+    riceScore: 27.2,
     ideaId: 'idea-002',
     description: 'SCIM 2.0 user and group sync layered on the existing SAML integration.',
     childItems: [
@@ -367,7 +367,7 @@ export const SEED_TICKETS: Ticket[] = [
     lastUpdate: hoursAgo(40),
     startDate: addDays(today, 3),
     endDate: addDays(today, 31),
-    riceScore: 41.3,
+    riceScore: 33,
     description:
       'Exponential backoff, a dead-letter queue, admin-visible delivery logs, and manual replay.',
     childItems: [
@@ -385,7 +385,7 @@ export const SEED_TICKETS: Ticket[] = [
     lastUpdate: hoursAgo(60),
     startDate: addDays(today, 24),
     endDate: addDays(today, 66),
-    riceScore: 49.5,
+    riceScore: 39.6,
     description:
       'Take the scheduled-report beta to GA with custom columns, Slack delivery, and per-team scoping.',
     childItems: [
@@ -402,7 +402,7 @@ export const SEED_TICKETS: Ticket[] = [
     lastUpdate: hoursAgo(75),
     startDate: addDays(today, 35),
     endDate: addDays(today, 77),
-    riceScore: 37.8,
+    riceScore: 30.2,
     description: 'View-only and department-scoped roles, required before the Meridian rollout.',
     childItems: [
       { id: 'c-106-1', title: 'Role model + migration', status: 'Todo', type: 'Story' },
@@ -420,7 +420,7 @@ export const SEED_TICKETS: Ticket[] = [
     updatedBy: 'GitHub',
     startDate: addDays(today, -56),
     endDate: addDays(today, -14),
-    riceScore: 28.5,
+    riceScore: 22.8,
     description: 'In-product setup checklist covering invites, permissions, and first board.',
     childItems: [
       { id: 'c-107-1', title: 'Checklist component', status: 'Done', type: 'Story' },
@@ -437,7 +437,7 @@ export const SEED_TICKETS: Ticket[] = [
     lastUpdate: hoursAgo(200),
     startDate: addDays(today, -84),
     endDate: addDays(today, -42),
-    riceScore: 55.2,
+    riceScore: 44.2,
     description: 'Shipped Q3 2025. P95 render 4.1s to 1.3s for mid-size workspaces.',
     childItems: [
       { id: 'c-108-1', title: 'Query result cache', status: 'Done', type: 'Story' },
