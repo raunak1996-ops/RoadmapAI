@@ -5,6 +5,7 @@ import { useApp } from '../state/AppContext';
 import { IssueCard } from '../components/insights/IssueCard';
 import { ApprovalPipeline, SynthesisPanel } from '../components/insights/SynthesisPanel';
 import { Button, Card, EmptyState } from '../components/ui/Primitives';
+import { DemoDataButton } from '../components/layout/DemoDataButton';
 import { synthesizeInsights } from '../services/aiService';
 import { cn } from '../lib/utils';
 
@@ -141,7 +142,14 @@ export function InsightsView() {
           ) : null}
         </div>
 
-        {filtered.length === 0 ? (
+        {state.issues.length === 0 ? (
+          <EmptyState
+            icon={<Inbox className="h-5 w-5" />}
+            title="No signals in the feed"
+            description="The workspace is empty. Load the sample dataset to see multi-channel customer signals flow through synthesis."
+            action={<DemoDataButton size="md" />}
+          />
+        ) : filtered.length === 0 ? (
           <EmptyState
             icon={<Inbox className="h-5 w-5" />}
             title="No signals match these filters"

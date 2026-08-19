@@ -2,6 +2,7 @@ import { Activity, CloudCog, FileDown, Sparkles, WifiOff } from 'lucide-react';
 import { AppTab } from '../../types';
 import { useApp } from '../../state/AppContext';
 import { Badge, Button } from '../ui/Primitives';
+import { DemoDataButton } from './DemoDataButton';
 import { isAiEnabled } from '../../services/geminiClient';
 import { generateStatusReport } from '../../services/pdfService';
 import { timeAgo } from '../../lib/utils';
@@ -105,6 +106,8 @@ export function Header() {
           <Activity className="h-3.5 w-3.5 text-slate-500" />
           Last event {timeAgo(lastSync)}
         </span>
+
+        <DemoDataButton />
 
         <Button variant="primary" size="sm" icon={<FileDown className="h-3.5 w-3.5" />} onClick={onExport}>
           Status report

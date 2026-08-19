@@ -47,7 +47,17 @@ function initialState(): AppState {
     integrations: SEED_INTEGRATIONS,
     syncFeed: [],
     syncEnabled: true,
+    demoLoaded: true,
   };
+}
+
+/**
+ * On a cleared workspace an empty array is the real value and must be kept.
+ * Otherwise it means nothing was persisted for that slice yet, so the seed fills in.
+ */
+function restore<T>(saved: T[] | undefined, seed: T[], cleared: boolean): T[] {
+  if (cleared) return saved ?? [];
+  return saved?.length ? saved : seed;
 }
 
 /** Merges persisted state over the seed so a schema addition never wipes a session. */
@@ -58,6 +68,7 @@ function hydrate(): AppState {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return base;
     const saved = JSON.parse(raw) as Partial<AppState>;
+    const cleared = saved.demoLoaded === false;
     return {
       ...base,
       ...saved,
@@ -65,10 +76,11 @@ function hydrate(): AppState {
       activeTab: Object.values(AppTab).includes(saved.activeTab as AppTab)
         ? (saved.activeTab as AppTab)
         : base.activeTab,
-      issues: saved.issues?.length ? saved.issues : base.issues,
-      ideas: saved.ideas ?? base.ideas,
-      tickets: saved.tickets?.length ? saved.tickets : base.tickets,
-      integrations: saved.integrations?.length ? saved.integrations : base.integrations,
+      demoLoaded: !cleared,
+      issues: restore(saved.issues, base.issues, cleared),
+      ideas: restore(saved.ideas, base.ideas, cleared),
+      tickets: restore(saved.tickets, base.tickets, cleared),
+      integrations: restore(saved.integrations, base.integrations, false),
       syncFeed: saved.syncFeed ?? [],
     };
   } catch {
@@ -92,6 +104,7 @@ export type Action =
   | { type: 'TOGGLE_INTEGRATION'; id: IntegrationId }
   | { type: 'SET_SYNC_ENABLED'; enabled: boolean }
   | { type: 'APPLY_SYNC'; event: SyncEvent }
+  | { type: 'CLEAR_DATA' }
   | { type: 'RESET' };
 
 function nextTicketId(tickets: Ticket[]): string {
@@ -277,8 +290,27 @@ function reducer(state: AppState, action: Action): AppState {
         ),
       };
 
+    case 'CLEAR_DATA':
+      return {
+        ...state,
+        demoLoaded: false,
+        issues: [],
+        insights: null,
+        ideas: [],
+        tickets: [],
+        syncFeed: [],
+        // The integration catalog is app configuration rather than workspace
+        // data, so the cards stay and only the demo's connections are dropped.
+        integrations: state.integrations.map((integration) => ({
+          ...integration,
+          connected: false,
+          lastSync: undefined,
+        })),
+      };
+
     case 'RESET':
-      return initialState();
+      // Keeps the current tab so restored data appears where the reader already is.
+      return { ...initialState(), activeTab: state.activeTab };
 
     default:
       return state;

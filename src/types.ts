@@ -156,4 +156,10 @@ export interface AppState {
   integrations: Integration[];
   syncFeed: SyncEvent[];
   syncEnabled: boolean;
+  /**
+   * False once the workspace has been deliberately cleared. Without this an
+   * empty array is indistinguishable from "nothing persisted yet", and the
+   * seed data would come back on the next reload.
+   */
+  demoLoaded: boolean;
 }

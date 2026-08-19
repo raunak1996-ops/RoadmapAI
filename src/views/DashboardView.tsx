@@ -17,6 +17,7 @@ import {
 import {
   ArrowRight,
   CircleDot,
+  Database,
   Flame,
   GitBranch,
   Layers,
@@ -26,7 +27,16 @@ import {
 } from 'lucide-react';
 import { AppTab } from '../types';
 import { useApp } from '../state/AppContext';
-import { Badge, Button, Card, CardHeader, ProgressBar, Stat } from '../components/ui/Primitives';
+import {
+  Badge,
+  Button,
+  Card,
+  CardHeader,
+  EmptyState,
+  ProgressBar,
+  Stat,
+} from '../components/ui/Primitives';
+import { DemoDataButton } from '../components/layout/DemoDataButton';
 import { CHART_COLORS, intensityColor, TOOLTIP_STYLE, TICKET_STATUS_STYLES } from '../lib/theme';
 import { categorize, formatCurrency, mean, timeAgo, ticketProgress } from '../lib/utils';
 
@@ -82,6 +92,19 @@ export function DashboardView() {
   const inFlight = tickets.filter((t) => t.status === 'In Progress');
   const approvedIdeas = ideas.filter((i) => i.status === 'Approved').length;
   const topIdeas = [...ideas].sort((a, b) => b.score - a.score).slice(0, 4);
+
+  // Every panel below is a chart or a ranked list, so an empty workspace would
+  // render as a grid of bare axes. One honest empty state reads better.
+  if (issues.length === 0 && ideas.length === 0 && tickets.length === 0) {
+    return (
+      <EmptyState
+        icon={<Database className="h-5 w-5" />}
+        title="Workspace is empty"
+        description="Load the sample dataset to explore signals, RICE-scored bets and the roadmap, or start adding your own from the Insights tab."
+        action={<DemoDataButton size="md" />}
+      />
+    );
+  }
 
   return (
     <div className="space-y-5">
