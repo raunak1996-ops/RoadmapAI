@@ -1,0 +1,35 @@
+version: 2
+
+updates:
+  # App dependencies. Minor/patch land as one grouped PR per week so the noise
+  # stays reviewable; majors arrive separately because they need real attention.
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+    groups:
+      npm-minor-and-patch:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+
+  # Keeps the workflow action pins current, so they do not drift several
+  # majors behind the way they did before.
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    labels:
+      - dependencies
+      - ci
+    groups:
+      github-actions:
+        patterns:
+          - "*"
