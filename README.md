@@ -6,6 +6,9 @@ RoadmapAI connects raw customer feedback (CRM, Zoom calls, sales conversations) 
 synthesis, RICE-scored feature ideation grounded in your own shipping history, and an interactive
 Kanban/Timeline roadmap with simulated GitHub & Slack syncing and PDF status reporting.
 
+**[Live demo →](https://roadmapai-raunak.netlify.app/)** — runs in Demo Mode on deterministic local
+synthesis, so it is fully explorable without an API key.
+
 Built with React 19, TypeScript, Tailwind CSS v4, Recharts, jsPDF, Lucide, and the official
 [`@google/genai`](https://www.npmjs.com/package/@google/genai) SDK.
 
@@ -106,8 +109,11 @@ To publish with live Gemini generation, add a repository secret named `GEMINI_AP
 in the published JavaScript. Leaving it unset publishes the site in Demo Mode, which is the intended
 default.
 
-Deploying to Netlify, Vercel, or Cloudflare Pages instead: build command `npm run build`, publish
-directory `dist`, and leave `VITE_BASE_PATH` unset.
+### Netlify (the canonical deployment)
+
+`netlify.toml` pins the build command, publish directory and Node version, and adds the SPA
+fallback. `VITE_BASE_PATH` stays unset so the app serves from the domain root. Vercel and
+Cloudflare Pages work the same way: build `npm run build`, publish `dist`.
 
 ---
 
@@ -145,8 +151,9 @@ src/
 
 - **Everything degrades.** `src/services/aiService.ts` exports `{ data, source, warning }` from every
   call. If the model errors, the deterministic fallback runs and the UI says so instead of failing.
-- **State is local.** The workspace persists to `localStorage` under `roadmapai.state.v1`. "Reset
-  demo data" in the sidebar restores the seed.
+- **State is local.** The workspace persists to `localStorage` under `roadmapai.state.v1`. The
+  header button clears the workspace or reloads the demo data, following whether records actually
+  exist; a cleared workspace survives a reload via the persisted `demoLoaded` flag.
 - **Cloud sync is simulated.** `useCloudSync` emits a GitHub or Slack event every 9 seconds against a
   ticket that is actually in motion, pulses the matching card, and only uses sources whose
   integration is toggled on. Replacing it with real webhooks is a change confined to that one file.
