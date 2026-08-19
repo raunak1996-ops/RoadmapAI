@@ -239,7 +239,7 @@ const draft = (
 ): FeatureIdea => ({
   ...idea,
   status: idea.status ?? 'Draft',
-  score: riceScore(idea.reach, idea.impact, idea.effort),
+  score: riceScore(idea.reach, idea.impact, idea.effort, idea.confidence),
 });
 
 export const SEED_IDEAS: FeatureIdea[] = [

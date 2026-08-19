@@ -6,7 +6,7 @@ import type {
   Ticket,
   TicketStatus,
 } from '../types';
-import { formatDate, ticketProgress } from '../lib/utils';
+import { DEFAULT_CONFIDENCE, formatDate, ticketProgress } from '../lib/utils';
 
 /**
  * Hand-rolled layout rather than a table plugin: the report is a fixed set of
@@ -276,13 +276,20 @@ export async function generateStatusReport(input: ReportInput): Promise<string> 
   const ranked = [...ideas].sort((a, b) => b.score - a.score).slice(0, 8);
   if (ranked.length) {
     heading(doc, cur, 'Top RICE-scored opportunities');
-    const ideaWidths = [232, 60, 60, 60, 86];
-    tableHeader(doc, cur, ['Feature', 'Reach', 'Impact', 'Effort', 'RICE'], ideaWidths);
+    const ideaWidths = [190, 56, 56, 66, 56, 74];
+    tableHeader(doc, cur, ['Feature', 'Reach', 'Impact', 'Conf', 'Effort', 'RICE'], ideaWidths);
     for (const idea of ranked) {
       tableRow(
         doc,
         cur,
-        [idea.title, String(idea.reach), String(idea.impact), String(idea.effort), idea.score.toFixed(1)],
+        [
+          idea.title,
+          String(idea.reach),
+          String(idea.impact),
+          `${Math.round((idea.confidence ?? DEFAULT_CONFIDENCE) * 100)}%`,
+          String(idea.effort),
+          idea.score.toFixed(1),
+        ],
         ideaWidths,
       );
     }

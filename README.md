@@ -36,10 +36,13 @@ CustomerIssue  ──►  InsightsData  ──►  FeatureIdea  ──►  Ticke
 
 ### RICE scoring
 
-`score = (reach × impact) ÷ effort`
+`score = (reach × impact × confidence) ÷ effort`
 
 - **Reach** — 1–100, percent of the enterprise base affected.
 - **Impact** — 1 (Low), 2 (Medium), 3 (High).
+- **Confidence** — 0.5 (Low), 0.8 (Medium), 1 (High); set by hand or taken from the model's own
+  confidence when the estimator runs. An idea with no stated confidence is scored at 0.8 rather
+  than 1, so an unsized bet cannot outrank a sized one that came back uncertain.
 - **Effort** — 1 (S, ~1wk), 2 (M, ~3wk), 3 (L, ~6wk), 4 (XL, ~10wk), 5 (XXL, ~16wk).
 
 The estimator is deliberately split into two steps. **Reach and Impact** are argued from linked

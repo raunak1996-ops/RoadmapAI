@@ -14,11 +14,31 @@ export function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
 }
 
-/** RICE without the C: (Reach x Impact) / Effort, rounded to one decimal. */
-export function riceScore(reach: number, impact: number, effort: number): number {
+/**
+ * Applied when an idea carries no confidence of its own. Deliberately below 1:
+ * a bet nobody has sized should not outrank one that was sized and came back
+ * merely uncertain, which is what a neutral 1.0 default would do.
+ */
+export const DEFAULT_CONFIDENCE = 0.8;
+
+/** RICE: (Reach x Impact x Confidence) / Effort, rounded to one decimal. */
+export function riceScore(
+  reach: number,
+  impact: number,
+  effort: number,
+  confidence: number = DEFAULT_CONFIDENCE,
+): number {
   const safeEffort = effort > 0 ? effort : 1;
-  return Math.round(((reach * impact) / safeEffort) * 10) / 10;
+  const safeConfidence = clamp(confidence, 0, 1);
+  return Math.round(((reach * impact * safeConfidence) / safeEffort) * 10) / 10;
 }
+
+/** The three confidence levels offered when scoring by hand. */
+export const CONFIDENCE_OPTIONS: Array<{ value: number; label: string }> = [
+  { value: 0.5, label: 'Low' },
+  { value: DEFAULT_CONFIDENCE, label: 'Medium' },
+  { value: 1, label: 'High' },
+];
 
 export const IMPACT_LABELS: Record<number, string> = {
   1: 'Low',

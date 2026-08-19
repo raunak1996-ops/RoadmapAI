@@ -266,7 +266,7 @@ export function DashboardView() {
         <Card>
           <CardHeader
             title="Highest RICE bets"
-            subtitle="(Reach × Impact) ÷ Effort"
+            subtitle="(Reach × Impact × Confidence) ÷ Effort"
             icon={<Lightbulb className="h-4 w-4" />}
             action={
               <Button

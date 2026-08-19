@@ -295,6 +295,7 @@ export async function generateFeatureIdeas(
       const reach = clamp(Math.round(raw.reach), 1, 100);
       const impact = clamp(Math.round(raw.impact), 1, 3);
       const effort = clamp(Math.round(raw.effort), 1, 5);
+      const confidence = raw.confidence !== undefined ? clamp(raw.confidence, 0, 1) : undefined;
       return {
         id: uid('idea'),
         title: raw.title,
@@ -305,9 +306,9 @@ export async function generateFeatureIdeas(
         reach,
         impact,
         effort,
-        score: riceScore(reach, impact, effort),
+        score: riceScore(reach, impact, effort, confidence),
         status: 'Draft',
-        confidence: raw.confidence !== undefined ? clamp(raw.confidence, 0, 1) : undefined,
+        confidence,
         createdAt: new Date().toISOString(),
       };
     });
@@ -388,7 +389,7 @@ function localIdeas(
       reach,
       impact,
       effort,
-      score: riceScore(reach, impact, effort),
+      score: riceScore(reach, impact, effort, 0.55),
       status: 'Draft',
       confidence: 0.55,
       createdAt: new Date().toISOString(),

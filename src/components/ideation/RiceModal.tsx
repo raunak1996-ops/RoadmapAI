@@ -16,6 +16,8 @@ import {
   cn,
   EFFORT_LABELS,
   EFFORT_WEEKS,
+  CONFIDENCE_OPTIONS,
+  DEFAULT_CONFIDENCE,
   IMPACT_LABELS,
   riceScore,
 } from '../../lib/utils';
@@ -52,7 +54,7 @@ export function RiceModal({
   const [impactRationale, setImpactRationale] = useState('');
   const [effortRationale, setEffortRationale] = useState('');
   const [risks, setRisks] = useState<string[]>([]);
-  const [confidence, setConfidence] = useState<number | undefined>(undefined);
+  const [confidence, setConfidence] = useState(DEFAULT_CONFIDENCE);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -64,14 +66,14 @@ export function RiceModal({
     setReachRationale(idea.reachRationale ?? '');
     setImpactRationale(idea.impactRationale ?? '');
     setEffortRationale(idea.effortRationale ?? '');
-    setConfidence(idea.confidence);
+    setConfidence(idea.confidence ?? DEFAULT_CONFIDENCE);
     setRisks([]);
     setBusy(false);
   }, [idea]);
 
   if (!idea) return null;
 
-  const score = riceScore(reach, impact, effort);
+  const score = riceScore(reach, impact, effort, confidence);
   const linked = issues.filter((issue) => idea.relatedIssueIds.includes(issue.id));
 
   const runReachImpact = async () => {
@@ -81,7 +83,7 @@ export function RiceModal({
     setImpact(result.data.impact);
     setReachRationale(result.data.reachRationale);
     setImpactRationale(result.data.impactRationale);
-    setConfidence(result.data.confidence);
+    setConfidence(result.data.confidence ?? DEFAULT_CONFIDENCE);
     setBusy(false);
     onNotify(
       result.source === 'gemini' ? 'Reach & Impact estimated' : 'Reach & Impact estimated (local)',
@@ -134,7 +136,7 @@ export function RiceModal({
               </span>
             </div>
             <span className="hidden text-[11px] text-slate-500 sm:inline">
-              ({reach} × {impact}) ÷ {effort}
+              ({reach} × {impact} × {confidence}) ÷ {effort}
             </span>
           </div>
 
@@ -259,12 +261,33 @@ export function RiceModal({
             {impactRationale ? <Rationale text={impactRationale} /> : null}
           </div>
 
-          {confidence !== undefined ? (
-            <p className="text-[11px] text-slate-500">
-              Model confidence in this half of the score:{' '}
-              <span className="text-slate-300">{Math.round(confidence * 100)}%</span>
+          <div>
+            <p className="text-xs font-medium text-slate-300">Confidence</p>
+            <div className="mt-2 grid grid-cols-3 gap-2">
+              {CONFIDENCE_OPTIONS.map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => setConfidence(option.value)}
+                  className={cn(
+                    'rounded-xl border px-3 py-2.5 text-left transition-colors',
+                    confidence === option.value
+                      ? 'border-indigo-500/60 bg-indigo-500/10'
+                      : 'border-slate-800 bg-slate-950/40 hover:border-slate-700',
+                  )}
+                >
+                  <span className="block text-sm font-semibold text-slate-100">{option.label}</span>
+                  <span className="block text-[10px] text-slate-500">
+                    multiplier ×{option.value}
+                  </span>
+                </button>
+              ))}
+            </div>
+            <p className="mt-2 text-[11px] text-slate-600">
+              Discounts the score by how much the reach and impact numbers can be trusted. An
+              estimate run sets this from the model's own confidence.
             </p>
-          ) : null}
+          </div>
         </section>
       ) : (
         <section className="mt-5 space-y-5">

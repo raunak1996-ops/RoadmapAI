@@ -78,7 +78,12 @@ function hydrate(): AppState {
         : base.activeTab,
       demoLoaded: !cleared,
       issues: restore(saved.issues, base.issues, cleared),
-      ideas: restore(saved.ideas, base.ideas, cleared),
+      // Scores are derived, never authoritative: recomputing on load means a
+      // change to the formula reaches workspaces saved under the old one.
+      ideas: restore(saved.ideas, base.ideas, cleared).map((idea) => ({
+        ...idea,
+        score: riceScore(idea.reach, idea.impact, idea.effort, idea.confidence),
+      })),
       tickets: restore(saved.tickets, base.tickets, cleared),
       integrations: restore(saved.integrations, base.integrations, false),
       syncFeed: saved.syncFeed ?? [],
@@ -180,7 +185,10 @@ function reducer(state: AppState, action: Action): AppState {
       const ideas = state.ideas.map((idea) => {
         if (idea.id !== action.id) return idea;
         const merged = { ...idea, ...action.patch };
-        return { ...merged, score: riceScore(merged.reach, merged.impact, merged.effort) };
+        return {
+    ...merged,
+    score: riceScore(merged.reach, merged.impact, merged.effort, merged.confidence),
+  };
       });
       return { ...state, ideas };
     }
